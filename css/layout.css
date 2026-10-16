@@ -1,0 +1,718 @@
+/* ==========================================================================
+   layout.css — 頁面框架
+   內容：外框 → 左側天數選單（含收合、深淺色切換）→ 每日內容排版
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   外框：[天數選單 | 每日內容]
+   -------------------------------------------------------------------------- */
+.shell {
+  display: grid;
+  grid-template-columns: var(--menu-w) minmax(0, 1fr);
+  gap: var(--space-5);
+  align-items: start;
+  max-width: var(--page-max);
+  margin: 0 auto;
+  transition: grid-template-columns var(--ease);
+}
+
+.shell.mini {
+  grid-template-columns: var(--menu-w-mini) minmax(0, 1fr);
+}
+
+/* --------------------------------------------------------------------------
+   左側天數選單
+   -------------------------------------------------------------------------- */
+.days {
+  position: sticky;
+  top: var(--sticky-top);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3);
+}
+
+.days-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.days h2 {
+  margin: 2px var(--space-2);
+  color: var(--muted);
+  font-size: var(--fs-section);
+  font-weight: 500;
+  letter-spacing: .12em;
+}
+
+/* 選單項目（.day）與深淺色按鈕（.theme-btn）共用的外觀 */
+.day,
+.theme-btn {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  padding: 9px 10px;
+  background: transparent;
+  color: var(--ink);
+  border: 0;
+  border-radius: var(--radius-sm);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.day:hover,
+.theme-btn:hover {
+  background: var(--bg);
+}
+
+.day:focus-visible,
+.theme-btn:focus-visible,
+.collapse:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 1px;
+}
+
+/* 左側方塊（D1、D2…／月亮太陽圖示） */
+.day .n,
+.theme-btn .n {
+  display: grid;
+  place-items: center;
+  width: var(--icon-box);
+  height: var(--icon-box);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+}
+
+.day {
+  gap: 2px 10px;
+}
+
+.day .n {
+  grid-row: span 2;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.day b {
+  font-size: var(--fs-menu);
+  font-weight: 500;
+}
+
+.day small {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: var(--fs-menu-sub);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* 目前選取的天數 */
+.day[aria-current="true"] {
+  background: var(--chip);
+}
+
+.day[aria-current="true"] .n {
+  background: var(--route);
+  border-color: var(--route);
+  color: var(--panel);
+}
+
+.day[aria-current="true"] b {
+  color: var(--route);
+  font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   收合按鈕
+   -------------------------------------------------------------------------- */
+.collapse {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: var(--icon-box);
+  height: var(--icon-box);
+  background: var(--panel);
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  cursor: pointer;
+}
+
+.collapse:hover {
+  color: var(--ink);
+}
+
+.collapse svg {
+  width: 14px;
+  height: 14px;
+  transition: transform var(--ease);
+}
+
+/* 收合狀態：只留方塊 */
+.shell.mini .days {
+  padding: var(--space-3) var(--space-2);
+}
+
+.shell.mini .days-head {
+  justify-content: center;
+}
+
+.shell.mini .days-head h2,
+.shell.mini .day b,
+.shell.mini .day small,
+.shell.mini .theme-btn b {
+  display: none;
+}
+
+.shell.mini .day,
+.shell.mini .theme-btn {
+  grid-template-columns: auto;
+  justify-content: center;
+  padding: 6px 0;
+}
+
+.shell.mini .day .n {
+  grid-row: auto;
+}
+
+.shell.mini .collapse svg {
+  transform: rotate(180deg);
+}
+
+/* --------------------------------------------------------------------------
+   深淺色切換
+   -------------------------------------------------------------------------- */
+.theme-row {
+  margin-top: 6px;
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--line);
+}
+
+.theme-btn {
+  width: 100%;
+  gap: 10px;
+}
+
+.theme-btn b {
+  font-size: var(--fs-menu);
+  font-weight: 500;
+}
+
+.theme-btn svg {
+  flex: none;
+  width: 15px;
+  height: 15px;
+}
+
+/* 淺色時顯示月亮，深色時顯示太陽 */
+.theme-btn .i-sun                         { display: none; }
+:root[data-theme="dark"] .theme-btn .i-sun  { display: block; }
+:root[data-theme="dark"] .theme-btn .i-moon { display: none; }
+
+/* --------------------------------------------------------------------------
+   每日內容：上排 [地圖 | 行程]，下排資訊卡
+   -------------------------------------------------------------------------- */
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.75fr) minmax(var(--side-min-w), 1fr);
+  gap: var(--space-4);
+  align-items: start;
+}
+
+/* 捲動時地圖固定，直到行程欄結束 */
+.row > .mapcard {
+  position: sticky;
+  top: var(--sticky-top);
+}
+
+.row > .mapcard svg {
+  max-height: calc(100vh - 110px);
+}
+
+/* 行程卡 */
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: var(--pad-side);
+}
+
+/* 資訊卡：左欄 標題／統計／按鈕，右欄 全島活動範圍 */
+.info {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, var(--ov-w));
+  column-gap: var(--space-7);
+  row-gap: var(--space-4);
+  align-items: start;
+  padding: var(--pad-info);
+}
+
+.info > *:not(.ov) {
+  grid-column: 1;
+}
+
+.info .ov {
+  grid-column: 2;
+  grid-row: 1 / span 6;
+  padding-left: var(--space-6);
+  border-left: 1px solid var(--line);
+}
+
+/* --------------------------------------------------------------------------
+   動態效果
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .shell,
+  .collapse svg {
+    transition: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   斷點
+   -------------------------------------------------------------------------- */
+
+/* ≤1000px：地圖與行程上下排列 */
+@media (max-width: 1000px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+  .row > .mapcard {
+    position: relative;
+  }
+}
+
+/* ≤860px：天數選單改為頂部橫列 */
+@media (max-width: 860px) {
+  .shell,
+  .shell.mini {
+    grid-template-columns: 1fr;
+  }
+  .days {
+    position: static;
+    flex-direction: row;
+    overflow-x: auto;
+    padding: var(--space-2);
+  }
+  .days-head,
+  .day small {
+    display: none;
+  }
+  .shell.mini .day b {
+    display: block;
+  }
+  .day {
+    flex: 0 0 auto;
+    grid-template-columns: auto;
+    justify-items: center;
+    text-align: center;
+  }
+  .day .n {
+    grid-row: auto;
+  }
+  .theme-row {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    margin: 0 0 0 auto;
+    padding: 0 0 0 var(--space-2);
+    border-top: 0;
+    border-left: 1px solid var(--line);
+  }
+  .theme-btn {
+    width: auto;
+    grid-template-columns: auto;
+    justify-items: center;
+    padding: 6px var(--space-2);
+  }
+  .theme-btn b {
+    font-size: 12px;
+  }
+}
+
+/* ≤640px：資訊卡改單欄，全島小圖移到下方 */
+@media (max-width: 640px) {
+  .info {
+    grid-template-columns: 1fr;
+  }
+  .info .ov {
+    grid-column: 1;
+    grid-row: auto;
+    padding-left: 0;
+    padding-top: var(--space-4);
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   資料載入狀態（js/loader.js）：畫面上方的提示，不佔版面
+   -------------------------------------------------------------------------- */
+.load-status {
+  position: fixed;
+  top: var(--space-4);
+  left: 50%;
+  z-index: 50;
+  max-width: calc(100% - 2 * var(--space-4));
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  transform: translateX(-50%);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--panel);
+  box-shadow: var(--shadow-soft);
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.load-status.is-error {
+  color: var(--ink);
+  border-color: var(--end);
+}
+
+.load-retry {
+  margin-left: var(--space-3);
+  padding: 4px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--chip);
+  color: var(--route);
+  font: inherit;
+  cursor: pointer;
+}
+
+/* 重新整理按鈕：點擊後圖示旋轉，直到頁面重新載入 */
+.refresh-btn.is-busy svg {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .refresh-btn.is-busy svg { animation: none; }
+}
+
+/* --------------------------------------------------------------------------
+   骨架畫面（Skeleton Loading）：資料載入前的版面預覽，形狀對應選單、地圖、行程、資訊卡
+   -------------------------------------------------------------------------- */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.sk {
+  display: block;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(90deg, var(--line) 0%, var(--bg) 50%, var(--line) 100%);
+  background-size: 200% 100%;
+  animation: sk-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes sk-shimmer {
+  from { background-position: 100% 0; }
+  to   { background-position: -100% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sk { animation: none; background: var(--line); }
+}
+
+.sk-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.sk-line    { height: 12px; }
+.sk-line.sm { height: 9px; }
+.sk-line.lg { height: 18px; }
+.w20 { width: 20%; } .w40 { width: 40%; } .w50 { width: 50%; } .w60 { width: 60%; }
+.w70 { width: 70%; } .w80 { width: 80%; } .w90 { width: 90%; }
+
+/* 選單 */
+.sk-menu { display: contents; }
+.sk-day { pointer-events: none; }
+.sk-day .n.sk { border: 0; }
+
+/* 內容區：與 .wrap 相同的上下排列 */
+.sk-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.sk-map { overflow: hidden; }
+.sk-bar {
+  display: flex;
+  gap: 8px;
+  padding: var(--pad-mapbar, 10px 12px);
+  border-bottom: 1px solid var(--line);
+}
+.sk-pill   { width: 72px; height: 30px; border-radius: var(--radius-pill); }
+.sk-canvas { aspect-ratio: 8 / 6; max-width: 100%; border-radius: 0; }
+
+.sk-side {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: var(--pad-side);
+}
+.sk-stop { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px; align-items: start; }
+.sk-dot  { width: 28px; height: 28px; border-radius: 50%; }
+.sk-leg  { height: 58px; margin-left: 38px; border-radius: var(--radius-md); }
+
+.sk-info {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, var(--ov-w, 280px));
+  gap: var(--space-6, 24px);
+  padding: var(--pad-info);
+}
+.sk-stats { display: flex; gap: 18px; padding-block: 8px; }
+.sk-stat  { width: 64px; height: 40px; }
+.sk-btn   { height: 44px; border-radius: var(--radius-md); }
+.sk-ov    { aspect-ratio: 4 / 5; max-width: 100%; border-radius: var(--radius-md); }
+
+@media (max-width: 640px) {
+  .sk-info { grid-template-columns: 1fr; }
+  .sk-ov   { display: none; }
+}
+
+.sk-day .sk-lines { width: 100%; min-width: 48px; }
+
+/* 「景點地點管理」連結：與深淺色按鈕同外觀 */
+a.places-link {
+  text-decoration: none;
+}
+
+/* --------------------------------------------------------------------------
+   連線狀態（選單底部，外觀同深淺色按鈕，但不可點）
+   -------------------------------------------------------------------------- */
+.conn-status,
+.conn-status:hover {
+  background: transparent;
+  cursor: default;
+}
+.conn-status b {
+  color: var(--muted);
+  font-size: var(--fs-menu-sub);
+}
+.conn-status.is-ok b    { color: var(--start); }
+.conn-status.is-error b { color: var(--end); }
+.conn-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+.conn-status.is-ok .conn-dot    { background: var(--start); box-shadow: 0 0 0 3px rgb(15 157 88 / .18); }
+.conn-status.is-error .conn-dot { background: var(--end);   box-shadow: 0 0 0 3px rgb(217 48 37 / .18); }
+.conn-status.is-unset .conn-dot { background: transparent; border: 2px solid var(--muted); }
+.conn-status.is-loading .conn-dot { animation: conn-pulse 1s ease-in-out infinite alternate; }
+@keyframes conn-pulse { from { opacity: .3; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .conn-status.is-loading .conn-dot { animation: none; }
+}
+.conn-status b { white-space: nowrap; }
+/* 天數選單改成橫列時，連線狀態只顯示圓點（文字放在提示與螢幕閱讀器標籤中） */
+@media (max-width: 860px) {
+  .conn-status b { display: none; }
+  .conn-status { padding-inline: var(--space-1); }
+}
+
+/* --------------------------------------------------------------------------
+   天數按鈕容器：桌機、平板不影響原本排列
+   -------------------------------------------------------------------------- */
+.day-list { display: contents; }
+
+/* --------------------------------------------------------------------------
+   ≤640px：天數選單改成 App Bar（參考 Material UI App Bar＋Tabs）
+   第一列：標題＋圖示按鈕（連線狀態、深淺色、重新整理、地點管理）
+   第二列：天數分頁，可左右滑動，選取中的天數下方有指示線
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  .days {
+    --appbar-bg: var(--route);
+    --appbar-ink: #fff;
+    --appbar-muted: rgb(255 255 255 / .72);
+    --appbar-indicator: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "head actions" "tabs tabs";
+    gap: 0;
+    margin: calc(-1 * var(--space-5)) calc(-1 * var(--page-gutter)) 0;
+    padding: 0;
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+    background: var(--appbar-bg);
+    color: var(--appbar-ink);
+    box-shadow: 0 2px 4px -1px rgb(0 0 0 / .2), 0 4px 5px 0 rgb(0 0 0 / .14), 0 1px 10px 0 rgb(0 0 0 / .12);
+  }
+  .days-head {
+    grid-area: head;
+    display: flex;
+    min-height: 56px;
+    margin: 0;
+    padding-left: 16px;
+  }
+  .days h2 {
+    margin: 0;
+    overflow: hidden;
+    color: inherit;
+    font-size: 20px;
+    font-weight: 500;
+    letter-spacing: 0;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .days .collapse { display: none; }
+
+  /* 右側圖示按鈕 */
+  .theme-row {
+    grid-area: actions;
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 0 4px 0 0;
+    border: 0;
+  }
+  .theme-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border-radius: 50%;
+    color: inherit;
+  }
+  .theme-btn:hover { background: rgb(255 255 255 / .12); }
+  .theme-btn .n {
+    width: auto;
+    height: auto;
+    border: 0;
+    color: inherit;
+  }
+  .theme-btn svg { width: 20px; height: 20px; }
+  .theme-btn b {                                   /* 文字只給螢幕閱讀器 */
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  .conn-status { width: 32px; }
+  .conn-status .conn-dot { box-shadow: 0 0 0 2px rgb(255 255 255 / .9) !important; }
+
+  /* 天數分頁 */
+  .day-list,
+  .sk-menu {
+    grid-area: tabs;
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .day-list::-webkit-scrollbar { display: none; }
+  .day {
+    flex: 1 0 auto;
+    display: block;
+    min-width: 64px;
+    padding: 12px 14px;
+    border-radius: 0;
+    background: transparent;
+    color: var(--appbar-muted);
+    text-align: center;
+  }
+  .day:hover { background: rgb(255 255 255 / .08); }
+  .day .n, .day small { display: none; }
+  .day b { color: inherit; font-size: 14px; font-weight: 500; white-space: nowrap; }
+  .day[aria-current="true"] {
+    background: transparent;
+    color: var(--appbar-ink);
+    box-shadow: inset 0 -2px 0 var(--appbar-indicator);
+  }
+  .day[aria-current="true"] b { color: inherit; font-weight: 700; }
+  .sk-day { padding: 14px; }
+  .sk-day .n { display: none; }
+  .load-status { top: 112px; }                    /* 提示訊息放在 App Bar 下方，不擋住天數分頁 */
+}
+/* 深色模式的 App Bar：深色表面（淺色主色配白字對比不足） */
+@media (max-width: 640px) and (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .days { --appbar-bg: #22292c; --appbar-ink: var(--ink); --appbar-muted: var(--muted); --appbar-indicator: var(--route); }
+}
+@media (max-width: 640px) {
+  :root[data-theme="dark"] .days { --appbar-bg: #22292c; --appbar-ink: var(--ink); --appbar-muted: var(--muted); --appbar-indicator: var(--route); }
+}
+
+/* --------------------------------------------------------------------------
+   ≤640px：我的行程每天的內容重新排版
+   1. 當天摘要卡（DAY N、起訖、公里／地點數、導航按鈕、全島活動範圍小圖）放最上面
+   2. 地圖與行程清單接成一張卡片（地圖在上、清單在下）
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  .shell { gap: var(--space-3); }
+  .wrap { gap: var(--space-3); }
+
+  /* 摘要卡 */
+  .wrap > .info {
+    order: -1;
+    row-gap: var(--space-3);
+    padding: 14px 16px 16px;
+  }
+  .info header .day-tag { margin: 0 0 2px; }
+  .info header h3 { margin: 0; font-size: 17px; line-height: 1.4; }
+  .info .stats { padding-block: 8px; gap: 20px; }
+  .info .stats div { flex-direction: row; align-items: baseline; gap: 4px; }
+  .info .stats strong { font-size: 17px; }
+
+  /* 全島活動範圍：文字在左、小圖在右 */
+  .info .ov {
+    grid-template-columns: minmax(0, 1fr) 96px;
+    gap: 12px;
+    padding-top: var(--space-3);
+  }
+  .info .ov-t { grid-column: 1; grid-row: 1; order: 0; }
+  .info .ov-t b { display: none; }                 /* 與上方標題相同，手機版不重複 */
+  .info .ovmap { grid-column: 2; grid-row: 1; width: 96px; max-width: 96px; border-radius: var(--radius-sm); }
+
+  /* 地圖＋行程清單接成一張卡片 */
+  .row { gap: 0; }
+  .row > .mapcard {
+    position: relative;
+    top: auto;
+    border-bottom: 0;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+  .row > .mapcard svg,
+  .row > .mapcard .glmap { max-height: 46vh; }
+  .row > .side {
+    gap: 10px;
+    padding: 14px 16px 16px;
+    border-top: 1px solid var(--line);
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  }
+  .side .foot { margin: 0; font-size: 12px; }
+}

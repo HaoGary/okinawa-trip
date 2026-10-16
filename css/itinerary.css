@@ -1,0 +1,106 @@
+/* ==========================================================================
+   itinerary.css — 行程與路段清單
+   結構：<ol class="stops">
+           <li class="stop first|last"> 地點（A、B…）
+           <li class="leg">              路段卡（距離・時間・路線說明）
+   清單內容由 js/lib/views.js 依 Apps Script 提供的資料產生。
+   ========================================================================== */
+
+.stops {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* 地點與路段共用兩欄：左邊圓點／連接線，右邊內容 */
+.stop,
+.leg {
+  display: grid;
+  grid-template-columns: var(--marker) minmax(0, 1fr);
+  gap: 0 10px;
+}
+
+/* --------------------------------------------------------------------------
+   地點
+   -------------------------------------------------------------------------- */
+.stop .mk {
+  display: grid;
+  place-items: center;
+  width: var(--marker);
+  height: var(--marker);
+  background: var(--route);
+  color: var(--panel);
+  border-radius: 50%;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.stop.first .mk { background: var(--start); }
+.stop.last  .mk { background: var(--end); }
+
+.stop b {
+  display: block;
+  padding-top: 3px;
+  font-size: var(--fs-stop);
+  line-height: var(--lh-title);
+}
+
+.stop small {
+  display: block;
+  color: var(--muted);
+  font-size: var(--fs-stop-note);
+  word-break: break-word;
+}
+
+/* --------------------------------------------------------------------------
+   路段卡
+   -------------------------------------------------------------------------- */
+.leg {
+  margin-block: var(--space-1);
+}
+
+.leg .rail {               /* 地點之間的垂直連接線 */
+  width: 2px;
+  margin: 0 auto;
+  background: var(--line);
+}
+
+.leg a {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) 10px;
+  margin-block: var(--space-1);
+  padding: var(--pad-leg);
+  color: var(--route);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-leg);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.leg a:hover,
+.leg a.on {                 /* .on：滑過時同步標示地圖上的路段 */
+  background: var(--chip);
+  border-color: var(--route);
+}
+
+.leg a b {
+  font-weight: 500;
+}
+
+.leg a span {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.leg a .via {               /* 路線說明換到第二行 */
+  flex-basis: 100%;
+}
+
+/* 這天在地點管理頁被清空：沒有標記，只顯示提示 */
+.stop.empty { grid-template-columns: 1fr; color: var(--muted); }
+.stop.empty b { color: var(--muted); }

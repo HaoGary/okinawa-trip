@@ -1,0 +1,98 @@
+<!doctype html>
+<!-- index.html — 我的行程：資料只來自地點管理頁「行程安排」按「確認」送出的行程 -->
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>我的行程</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- 字型不擋住畫面：先用系統字型顯示，字型下載完再換上 -->
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap"></noscript>
+<link rel="stylesheet" href="css/tokens.css?v=20261015i">
+<link rel="stylesheet" href="css/base.css?v=20261015i">
+<link rel="stylesheet" href="css/layout.css?v=20261015i">
+<link rel="stylesheet" href="css/map.css?v=20261015i">
+<link rel="stylesheet" href="css/itinerary.css?v=20261015i">
+<link rel="stylesheet" href="css/popup.css?v=20261015i">
+<link rel="stylesheet" href="css/responsive.css?v=20261015i">
+</head>
+<body>
+<div class="shell">
+<nav class="card days" aria-label="行程天數">
+  <!-- 天數按鈕由 js/app.js 依 Apps Script 提供的資料產生，插在 theme-row 之前 -->
+  <div class="days-head">
+    <h2>我的行程</h2>
+    <button class="collapse" id="collapse" aria-expanded="true" aria-label="收合選單" title="收合選單"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3 5 8l5 5"/></svg></button>
+  </div>
+  <!-- 載入中的骨架（js/loader.js 取得資料後移除） -->
+  <div class="sk-menu" id="skeleton-menu" aria-hidden="true">
+    <div class="day sk-day"><span class="n sk"></span><span class="sk-lines"><span class="sk sk-line w60"></span><span class="sk sk-line w80 sm"></span></span></div>
+    <div class="day sk-day"><span class="n sk"></span><span class="sk-lines"><span class="sk sk-line w60"></span><span class="sk sk-line w80 sm"></span></span></div>
+    <div class="day sk-day"><span class="n sk"></span><span class="sk-lines"><span class="sk sk-line w60"></span><span class="sk sk-line w80 sm"></span></span></div>
+    <div class="day sk-day"><span class="n sk"></span><span class="sk-lines"><span class="sk sk-line w60"></span><span class="sk sk-line w80 sm"></span></span></div>
+    <div class="day sk-day"><span class="n sk"></span><span class="sk-lines"><span class="sk sk-line w60"></span><span class="sk sk-line w80 sm"></span></span></div>
+  </div>
+  <!-- 天數按鈕（js/app.js 產生）；桌機照原樣排在選單中，手機版是 App Bar 下方可左右滑動的分頁 -->
+  <div class="day-list" id="day-list"></div>
+  <div class="theme-row">
+    <!-- 連線狀態（js/loader.js 更新）：連線中／已連線／連線失敗 -->
+    <div class="theme-btn conn-status is-loading" id="conn-status" role="status" aria-live="polite" title="正在連線 Apps Script">
+      <span class="n"><span class="conn-dot" aria-hidden="true"></span></span>
+      <b id="conn-lbl">連線中…</b>
+    </div>
+    <button class="theme-btn" id="theme-btn" type="button" aria-pressed="false">
+      <span class="n"><svg class="i-moon" viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z"/></svg><svg class="i-sun" viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1v1.6M8 13.4V15M1 8h1.6M13.4 8H15M3 3l1.1 1.1M11.9 11.9L13 13M3 13l1.1-1.1M11.9 4.1L13 3"/></svg></span>
+      <b id="theme-lbl">深色模式</b>
+    </button>
+    <button class="theme-btn refresh-btn" id="refresh-btn" type="button" title="重新讀取最新的行程資料">
+      <span class="n"><svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9"/><path d="M13.5 2.5v3h-3"/></svg></span>
+      <b>重新整理</b>
+    </button>
+    <a class="theme-btn places-link" id="places-link" href="places.html" title="搜尋景點、匯入清單並安排到每天">
+      <span class="n"><svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 14.5s4.5-4.2 4.5-7.7a4.5 4.5 0 0 0-9 0c0 3.5 4.5 7.7 4.5 7.7z"/><circle cx="8" cy="6.8" r="1.6"/></svg></span>
+      <b>地點管理</b>
+    </a>
+  </div>
+</nav>
+<p class="load-status" id="load-status" role="status" hidden></p>
+<div class="sk-wrap" id="skeleton" role="status" aria-busy="true">
+  <span class="visually-hidden">正在載入行程資料…</span>
+  <div class="row" aria-hidden="true">
+    <div class="card sk-map">
+      <div class="sk-bar"><span class="sk sk-pill"></span><span class="sk sk-pill"></span></div>
+      <div class="sk sk-canvas"></div>
+    </div>
+    <div class="card sk-side">
+      <span class="sk sk-line w40 sm"></span>
+      <div class="sk-stop"><span class="sk sk-dot"></span><span class="sk-lines"><span class="sk sk-line w70"></span><span class="sk sk-line w50 sm"></span></span></div>
+      <div class="sk sk-leg"></div>
+      <div class="sk-stop"><span class="sk sk-dot"></span><span class="sk-lines"><span class="sk sk-line w60"></span><span class="sk sk-line w40 sm"></span></span></div>
+      <div class="sk sk-leg"></div>
+      <div class="sk-stop"><span class="sk sk-dot"></span><span class="sk-lines"><span class="sk sk-line w80"></span><span class="sk sk-line w50 sm"></span></span></div>
+    </div>
+  </div>
+  <div class="card sk-info" aria-hidden="true">
+    <div class="sk-lines">
+      <span class="sk sk-line w20 sm"></span>
+      <span class="sk sk-line w60 lg"></span>
+      <span class="sk sk-line w90"></span>
+      <div class="sk-stats"><span class="sk sk-stat"></span><span class="sk sk-stat"></span><span class="sk sk-stat"></span></div>
+      <span class="sk sk-btn"></span>
+    </div>
+    <div class="sk sk-ov"></div>
+  </div>
+</div>
+<!-- 每日區塊（地圖、行程、資訊卡）由 js/app.js 產生並加在這裡 -->
+</div>
+
+<!-- 載入順序：設定 → loader（取得行程資料後，再載入功能模組與 app.js） -->
+<script src="js/config.js?v=20261015i"></script>
+<!-- 我的行程：只讀取地點管理頁送出的行程（Apps Script action=myplan），不帶入原始行程 -->
+<script src="js/myplan-mode.js?v=20261015i"></script>
+<script src="js/myplan-build.js?v=20261015i"></script>
+<script src="js/loader.js?v=20261015i"></script>
+</body>
+</html>

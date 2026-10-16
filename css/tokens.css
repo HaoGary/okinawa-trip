@@ -1,0 +1,150 @@
+/* ==========================================================================
+   tokens.css — 設計變數（所有顏色、字級、間距、圓角、陰影、尺寸都在這裡改）
+
+   使用原則
+   - 元件檔只用 var(--…)，不要直接寫顏色或數字。
+   - 想改「全站」→ 改這裡；想改「某個元件」→ 改該元件的元件變數。
+   - 小螢幕的字級／間距在 responsive.css 只覆寫變數，不覆寫選擇器。
+
+   斷點（CSS 變數無法用在 @media，請手動保持一致）
+   - 1000px：地圖與行程改為上下排列
+   -  860px：左側天數選單改為頂部橫列
+   -  640px：手機版字級與資訊卡單欄
+   -  380px：極窄手機
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. 顏色 — 淺色（預設）
+   -------------------------------------------------------------------------- */
+:root {
+  /* 介面 */
+  --bg:       #f3f5f4;   /* 頁面底色 */
+  --panel:    #ffffff;   /* 卡片底色 */
+  --ink:      #1b2a2f;   /* 主要文字 */
+  --muted:    #5b6b70;   /* 次要文字 */
+  --line:     #dde3e2;   /* 邊框、分隔線 */
+  --chip:     #e8f0fe;   /* 選取中的淡色底 */
+
+  /* 地圖 */
+  --sea:      #cfe6ee;
+  --land:     #eef0e8;
+  --road:     #ffffff;
+  --roadedge: #d4d8cf;
+  --river:    #a9d3e2;
+
+  /* 路線與標記 */
+  --route:    #1a73e8;   /* 主色：路線、連結、強調數字 */
+  --rail:     #2a9d6f;   /* 單軌電車 */
+  --start:    #0f9d58;   /* 起點 A */
+  --end:      #d93025;   /* 終點、活動範圍框 */
+
+  /* 圖卡（插圖固定白框，不隨深色模式改變） */
+  --photo-frame: #ffffff;
+  --shadow-color: 20 30 40;  /* RGB，給 rgb(var(--shadow-color) / α) 使用 */
+}
+
+/* --------------------------------------------------------------------------
+   2. 顏色 — 深色
+   系統為深色時自動套用（除非使用者選了淺色），或 data-theme="dark" 時套用。
+   兩段內容必須相同。
+   -------------------------------------------------------------------------- */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121719; --panel: #1b2225; --ink: #e7eeee; --muted: #9aaaae; --line: #2c373a; --chip: #1f3352;
+    --sea: #183441; --land: #20282a; --road: #36403f; --roadedge: #2a3332; --river: #24516a;
+    --route: #7cacf8; --rail: #4cc493; --start: #3ddc84; --end: #ff6b5e;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121719; --panel: #1b2225; --ink: #e7eeee; --muted: #9aaaae; --line: #2c373a; --chip: #1f3352;
+  --sea: #183441; --land: #20282a; --road: #36403f; --roadedge: #2a3332; --river: #24516a;
+  --route: #7cacf8; --rail: #4cc493; --start: #3ddc84; --end: #ff6b5e;
+  color-scheme: dark;
+}
+
+/* --------------------------------------------------------------------------
+   3. 字型與字級
+   -------------------------------------------------------------------------- */
+:root {
+  --font-sans: "Noto Sans TC", system-ui, -apple-system, "PingFang TC", "Microsoft JhengHei", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+
+  --fs-body:      15px;   /* 內文 */
+  --fs-title:     16px;   /* 每日標題 h3 */
+  --fs-desc:      14px;   /* 標題下方說明 */
+  --fs-tag:       12px;   /* DAY 1 小標 */
+  --fs-section:   12px;   /* 「行程與路段」等區塊標籤 */
+  --fs-note:      12px;   /* 地圖上方註解 */
+  --fs-foot:      12px;   /* 卡片底部說明 */
+  --fs-stat:      22px;   /* 統計大數字 */
+  --fs-stat-label:12px;   /* 統計數字下方單位 */
+  --fs-btn:       15px;   /* 按鈕 */
+  --fs-tab:       14px;   /* 交通方式標籤 */
+  --fs-menu:      14px;   /* 左側天數選單 */
+  --fs-menu-sub:  12px;   /* 天數選單副標 */
+  --fs-stop:      15px;   /* 行程地點名稱 */
+  --fs-stop-note: 12.5px; /* 行程地點地址 */
+  --fs-leg:       13px;   /* 路段卡 */
+  --fs-ov-title:  15px;   /* 活動範圍標題 */
+  --fs-ov-note:   12.5px; /* 活動範圍說明 */
+
+  --lh-body:    1.6;
+  --lh-title:   1.4;   /* 地點名稱、活動範圍標題 */
+  --lh-heading: 1.4;   /* 每日標題 h3 */
+  --lh-desc:    1.6;   /* 標題下方說明 */
+}
+
+/* --------------------------------------------------------------------------
+   4. 間距、圓角、陰影
+   -------------------------------------------------------------------------- */
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+
+  --radius-sm:   8px;    /* 選單項目、小按鈕 */
+  --radius-md:   10px;   /* 按鈕、圖卡說明 */
+  --radius-lg:   12px;   /* 卡片 */
+  --radius-pill: 999px;
+
+  --shadow-pop:   0 6px 18px rgb(var(--shadow-color) / .28), 0 1px 3px rgb(var(--shadow-color) / .2);
+  --shadow-soft:  0 2px 8px rgb(var(--shadow-color) / .12);
+  --shadow-small: 0 1px 4px rgb(var(--shadow-color) / .18);
+
+  --focus-ring: 2px solid var(--route);
+  --ease: .2s ease;
+}
+
+/* --------------------------------------------------------------------------
+   5. 版面尺寸與元件內距
+   -------------------------------------------------------------------------- */
+:root {
+  --page-max:      1400px;
+  --page-gutter:   16px;                                   /* 左右留白 */
+  --sticky-top:    calc(env(safe-area-inset-top, 0px) + 16px);
+
+  --menu-w:        200px;  /* 左側選單寬 */
+  --menu-w-mini:   62px;   /* 收合後寬 */
+  --side-min-w:    300px;  /* 右側行程欄最小寬 */
+  --ov-w:          300px;  /* 全島小圖寬 */
+  --icon-box:      30px;   /* 選單圖示方塊 */
+  --marker:        28px;   /* 行程清單中的 A/B/C 圓點 */
+
+  --pad-info:      20px;   /* 資訊卡內距 */
+  --pad-side:      16px;   /* 行程卡內距 */
+  --pad-btn:       11px 14px;
+  --pad-tab:       6px 12px;
+  --pad-mapbar:    10px 12px;
+  --pad-leg:       6px 10px;
+  --stats-gap:     18px;
+  --stats-pad:     12px;
+
+  --pop-w:         156px;  /* 景色圖卡寬 */
+  --pop-img:       132px;  /* 景色圖片邊長 */
+  --pop-radius:    22px;
+}

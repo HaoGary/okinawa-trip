@@ -1,0 +1,154 @@
+/* ==========================================================================
+   popup.css — 景色圖卡（點選地圖上的 A、B、C… 時出現）
+   結構：.scene-pop（加 .below 表示開在標記下方）
+           .cap   名稱與連結
+           .frame 圖片
+           .tip   指向標記的小三角
+           .x     關閉
+   由 js/scenes.js 建立並定位。
+   ========================================================================== */
+
+.scene-pop {
+  position: absolute;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: var(--pop-w);
+  animation: pop .16s ease-out;
+}
+
+/* --------------------------------------------------------------------------
+   排列順序：預設開在標記上方 → 說明、圖片、三角（朝下）
+             .below 開在標記下方 → 三角（朝上）、圖片、說明
+   -------------------------------------------------------------------------- */
+.scene-pop .cap        { order: 1; }
+.scene-pop .frame      { order: 2; }
+.scene-pop .tip        { order: 3; }
+.scene-pop.below .tip  { order: 0; }
+.scene-pop.below .cap  { order: 4; }
+
+/* --------------------------------------------------------------------------
+   圖片
+   -------------------------------------------------------------------------- */
+.scene-pop .frame {
+  width: var(--pop-img);
+  height: var(--pop-img);
+  padding: 4px;
+  background: var(--photo-frame);
+  border-radius: var(--pop-radius);
+  box-shadow: var(--shadow-pop);
+}
+
+.scene-pop .frame svg,
+.scene-pop .frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: calc(var(--pop-radius) - 4px);
+  object-fit: cover;
+}
+
+/* --------------------------------------------------------------------------
+   說明
+   -------------------------------------------------------------------------- */
+.scene-pop .cap {
+  max-width: 180px;
+  padding: 6px 10px;
+  background: var(--panel);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-soft);
+  text-align: center;
+}
+
+.scene-pop .cap b {
+  display: block;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.scene-pop .cap small {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.scene-pop .cap a {
+  color: var(--route);
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.scene-pop .cap a:hover {
+  text-decoration: underline;
+}
+
+/* --------------------------------------------------------------------------
+   指向三角
+   -------------------------------------------------------------------------- */
+.scene-pop .tip {
+  width: 14px;
+  height: 14px;
+  margin-top: -13px;
+  background: var(--photo-frame);
+  box-shadow: 3px 3px 6px rgb(var(--shadow-color) / .15);
+  transform: rotate(45deg);
+}
+
+.scene-pop.below .tip {
+  margin-top: 0;
+  margin-bottom: -13px;
+  box-shadow: -2px -2px 5px rgb(var(--shadow-color) / .12);
+}
+
+/* --------------------------------------------------------------------------
+   關閉按鈕
+   -------------------------------------------------------------------------- */
+.scene-pop .x {
+  position: absolute;
+  top: -10px;
+  right: -4px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  background: var(--panel);
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  box-shadow: var(--shadow-small);
+  cursor: pointer;
+}
+
+.scene-pop .x:hover {
+  color: var(--ink);
+}
+
+.scene-pop .x:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 1px;
+}
+
+.scene-pop .x svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* --------------------------------------------------------------------------
+   動態效果
+   -------------------------------------------------------------------------- */
+@keyframes pop {
+  from { opacity: 0; transform: translateY(6px) scale(.96); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene-pop {
+    animation: none;
+  }
+}

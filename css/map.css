@@ -1,0 +1,204 @@
+/* ==========================================================================
+   map.css — 地圖
+   內容：路線地圖卡、地圖文字與標記、全島活動範圍小圖
+   地圖本身由 js/lib/map.js 依 Apps Script 提供的資料以 SVG 繪製，顏色取自 tokens.css。
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   路線地圖卡
+   -------------------------------------------------------------------------- */
+.mapcard {
+  position: relative;   /* 景色圖卡以此定位 */
+  overflow: hidden;
+}
+
+.mapbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--pad-mapbar);
+  border-bottom: 1px solid var(--line);
+}
+
+/* --------------------------------------------------------------------------
+   SVG 文字
+   --k 由 js/app.js 依地圖實際寬度設定：桌機為 1，手機放大到最多 1.9 倍，
+   讓縮小的地圖仍看得清楚。
+   -------------------------------------------------------------------------- */
+.lbl {                       /* 一般標籤：道路、海、站名 */
+  fill: var(--muted);
+  font-family: var(--font-sans);
+  font-size: calc(11px * var(--k, 1));
+}
+
+.lbl-b {                     /* 地點名稱 */
+  fill: var(--ink);
+  font-family: var(--font-sans);
+  font-size: calc(12.5px * var(--k, 1));
+  font-weight: 700;
+}
+
+.sea-lbl {                   /* 海域名稱 */
+  fill: var(--muted);
+  font-size: calc(13px * var(--k, 1));
+  font-style: italic;
+  letter-spacing: .3em;
+}
+
+.mk-t {                      /* 標記圓點內的字母 A、B、C */
+  fill: var(--panel);
+  font: 500 calc(11px * var(--k, 1)) var(--font-mono);
+}
+
+.mapcard svg text {
+  pointer-events: none;      /* 點擊穿透到下方的標記 */
+}
+
+/* --------------------------------------------------------------------------
+   可點擊的地點標記
+   -------------------------------------------------------------------------- */
+svg [data-stop] {
+  cursor: pointer;
+}
+
+svg [data-stop]:focus {
+  outline: none;
+}
+
+svg [data-stop]:focus-visible {
+  stroke: var(--ink);
+  stroke-width: 3;
+}
+
+/* --------------------------------------------------------------------------
+   全島活動範圍（資訊卡右欄）
+   -------------------------------------------------------------------------- */
+.ov {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  align-items: center;
+}
+
+.ovmap {
+  width: 100%;
+  max-width: var(--ov-w);
+  height: auto;
+  background: var(--sea);
+  border-radius: var(--radius-md);
+}
+
+.ov-t {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  order: -1;                 /* 文字在上、小圖在下 */
+  min-width: 0;
+}
+
+.ov-t .eyebrow {
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: .14em;
+}
+
+.ov-t b {
+  font-size: var(--fs-ov-title);
+  line-height: var(--lh-title);
+}
+
+.ov-t small {
+  color: var(--muted);
+  font-size: var(--fs-ov-note);
+}
+
+/* 圖例：本日範圍 */
+.ov-t .key {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.ov-t .key i {
+  width: 14px;
+  height: 10px;
+  background: color-mix(in srgb, var(--end) 15%, transparent);
+  border: 2px solid var(--end);
+  border-radius: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   MapLibre 路線地圖（我的行程 myplan.html，js/lib/map-gl.js）
+   -------------------------------------------------------------------------- */
+.glmap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: var(--map-ratio, 1.4);
+  min-height: 340px;
+  max-height: calc(100vh - 110px);
+  background: var(--sea, #cfe5ee);
+}
+.glmap .maplibregl-canvas:focus-visible { outline: var(--focus-ring); outline-offset: -2px; }
+
+/* 地點標記：A/B/C 圓點（與 SVG 版相同的顏色） */
+.gl-mk {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font: 700 12px/1 'IBM Plex Mono', ui-monospace, monospace;
+  background: var(--route);
+  border: 2.5px solid var(--panel);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .3);
+  cursor: pointer;
+}
+.gl-mk.is-start { background: var(--start); }
+.gl-mk.is-end { background: var(--end); }
+.gl-mk:hover { transform: scale(1.12); }
+.gl-mk:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+
+/* 控制按鈕、比例尺、版權列：跟著深淺色 */
+.glmap .maplibregl-ctrl-group { background: var(--panel); border-radius: 8px; box-shadow: 0 1px 4px rgba(0, 0, 0, .18); }
+.glmap .maplibregl-ctrl-group button + button { border-top-color: var(--line, #dadce0); }
+.glmap .maplibregl-ctrl-group button .maplibregl-ctrl-icon { filter: none; }
+.glmap .gl-fit { display: grid; place-items: center; color: var(--ink); }
+.glmap .maplibregl-ctrl-scale { background: color-mix(in srgb, var(--panel) 80%, transparent); color: var(--ink); border-color: var(--ink); }
+.glmap .maplibregl-ctrl-attrib { font-size: 11px; }
+:root[data-theme="dark"] .glmap .maplibregl-ctrl-group button .maplibregl-ctrl-icon { filter: invert(1) hue-rotate(180deg); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .glmap .maplibregl-ctrl-group button .maplibregl-ctrl-icon { filter: invert(1) hue-rotate(180deg); }
+}
+@media (max-width: 860px) {
+  .glmap { min-height: 300px; max-height: 70vh; }
+}
+
+/* 地點名稱（跟著圓點的 HTML 文字，位置由 map-gl.js 依重疊情況挑選） */
+.gl-stop { position: relative; width: 26px; height: 26px; }
+.gl-lbl {
+  position: absolute;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--ink);
+  pointer-events: none;
+  text-shadow: 0 0 2px var(--panel), 0 0 2px var(--panel), 0 0 3px var(--panel), 0 0 4px var(--panel);
+}
+.gl-stop.pos-r .gl-lbl { left: calc(100% + 6px); top: 50%; transform: translateY(-50%); }
+.gl-stop.pos-l .gl-lbl { right: calc(100% + 6px); top: 50%; transform: translateY(-50%); }
+.gl-stop.pos-t .gl-lbl { bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); }
+.gl-stop.pos-b .gl-lbl { top: calc(100% + 6px); left: 50%; transform: translateX(-50%); }
+.gl-stop.no-lbl .gl-lbl { visibility: hidden; }
+
+/* 活動範圍小圖（MapLibre 版）：與 SVG 版同樣的寬高比例 320×400 */
+.ovmap-gl { aspect-ratio: 320 / 400; overflow: hidden; }
+.ovmap-gl .maplibregl-ctrl-attrib { font-size: 10px; }
+
+/* 我的行程：地圖上方的交通方式列（mapbar）與載入中的骨架列都隱藏 */
+.mapbar,
+.sk-bar { display: none !important; }

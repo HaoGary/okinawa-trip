@@ -1,0 +1,189 @@
+/* ==========================================================================
+   base.css — 重設與共用元件
+   內容：reset／頁面、卡片、文字樣式、統計數字、按鈕、交通方式標籤
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Reset／頁面
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+body {
+  margin: 0;
+  padding-inline: var(--page-gutter);
+  padding-block: var(--space-5) 40px;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+}
+
+svg {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+}
+
+/* --------------------------------------------------------------------------
+   卡片
+   -------------------------------------------------------------------------- */
+.card {
+  min-width: 0;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+}
+
+/* --------------------------------------------------------------------------
+   文字樣式
+   -------------------------------------------------------------------------- */
+header h3 {
+  margin: 0;
+  font-size: var(--fs-title);
+  font-weight: 700;
+  line-height: var(--lh-heading);
+  text-wrap: balance;
+}
+
+header p {
+  margin: var(--space-1) 0 0;
+  color: var(--muted);
+  font-size: var(--fs-desc);
+  line-height: var(--lh-desc);
+}
+
+/* 「DAY 1」小標 */
+.day-tag {
+  margin: 0 0 2px;
+  color: var(--route);
+  font-size: var(--fs-tag);
+  font-weight: 700;
+  line-height: var(--lh-body);
+  letter-spacing: .12em;
+}
+
+/* 「行程與路段」區塊標籤 */
+.sec {
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--fs-section);
+  font-weight: 500;
+  letter-spacing: .14em;
+}
+
+.note {
+  color: var(--muted);
+  font-size: var(--fs-note);
+}
+
+.foot {
+  color: var(--muted);
+  font-size: var(--fs-foot);
+}
+
+.spacer {
+  flex: 1;
+}
+
+/* --------------------------------------------------------------------------
+   統計數字（公里／時間／地點數）
+   -------------------------------------------------------------------------- */
+.stats {
+  display: flex;
+  gap: var(--stats-gap);
+  padding-block: var(--stats-pad);
+  border-block: 1px solid var(--line);
+}
+
+.stats div {
+  display: flex;
+  flex-direction: column;
+}
+
+.stats strong {
+  color: var(--route);
+  font-family: var(--font-mono);
+  font-size: var(--fs-stat);
+  font-variant-numeric: tabular-nums;
+}
+
+.stats span {
+  color: var(--muted);
+  font-size: var(--fs-stat-label);
+  letter-spacing: .04em;
+}
+
+/* --------------------------------------------------------------------------
+   按鈕
+   -------------------------------------------------------------------------- */
+.btns {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--pad-btn);
+  background: var(--panel);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  font-size: var(--fs-btn);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.btn:hover {
+  filter: brightness(1.05);
+}
+
+.btn.primary {
+  background: var(--route);
+  border-color: var(--route);
+  color: var(--panel);
+}
+
+/* --------------------------------------------------------------------------
+   交通方式標籤（開車／單軌電車）
+   -------------------------------------------------------------------------- */
+.tab {
+  padding: var(--pad-tab);
+  background: var(--panel);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  font: inherit;
+  font-size: var(--fs-tab);
+  cursor: pointer;
+}
+
+.tab.static {
+  cursor: default;
+}
+
+.tab[aria-pressed="true"] {
+  background: var(--chip);
+  border-color: var(--route);
+  color: var(--route);
+  font-weight: 500;
+}
+
+.tab:focus-visible,
+.btn:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+}

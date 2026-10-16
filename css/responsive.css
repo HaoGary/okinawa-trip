@@ -1,0 +1,50 @@
+/* ==========================================================================
+   responsive.css — 小螢幕尺寸
+   只覆寫 tokens.css 的變數，不覆寫元件選擇器；
+   要調整手機字級或間距，改這裡的數值即可。
+   （版面排列的斷點在 layout.css）
+   ========================================================================== */
+
+/* ≤640px：手機 */
+@media (max-width: 640px) {
+  :root {
+    --fs-body:       14px;
+    --fs-title:      15px;
+    --fs-desc:       13px;
+    --fs-tag:        11px;
+    --fs-section:    11px;
+    --fs-note:       11px;
+    --fs-stat:       18px;
+    --fs-stat-label: 11px;
+    --fs-btn:        14px;
+    --fs-tab:        13px;
+    --fs-menu:       13px;
+    --fs-stop:       14px;
+    --fs-stop-note:  12px;
+    --fs-leg:        12.5px;
+    --fs-ov-title:   14px;
+    --fs-ov-note:    12px;
+    --lh-heading:    1.45;
+    --lh-desc:       1.55;
+
+    --pad-info:   16px;
+    --pad-side:   14px;
+    --pad-btn:    10px 12px;
+    --pad-tab:    5px 10px;
+    --pad-mapbar: 8px 10px;
+    --pad-leg:    6px 8px;
+    --stats-gap:  14px;
+    --stats-pad:  10px;
+
+    --pop-img:    116px;
+    --pop-radius: 20px;
+  }
+}
+
+/* ≤380px：極窄手機 */
+@media (max-width: 380px) {
+  :root {
+    --fs-title: 14px;
+    --fs-stat:  16px;
+  }
+}

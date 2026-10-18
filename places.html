@@ -10,9 +10,9 @@
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap"></noscript>
-<link rel="stylesheet" href="css/tokens.css?v=20261015i">
-<link rel="stylesheet" href="css/base.css?v=20261015i">
-<link rel="stylesheet" href="css/places.css?v=20261015i">
+<link rel="stylesheet" href="css/tokens.css?v=20261018c">
+<link rel="stylesheet" href="css/base.css?v=20261018c">
+<link rel="stylesheet" href="css/places.css?v=20261018c">
 </head>
 <body>
 <div class="pm">
@@ -118,7 +118,14 @@
 <!-- 對話框（安排衝突、手動新增） -->
 <div class="pm-modal" id="modal" hidden>
   <div class="pm-modal-box card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-    <h2 id="modal-title"></h2>
+    <!-- 標題列：桌機只顯示標題；手機版全螢幕對話框時是 App Bar（✕ 關閉、標題、右側送出） -->
+    <div class="pm-modal-bar">
+      <button class="pm-modal-x" type="button" data-close aria-label="關閉">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+      <h2 id="modal-title"></h2>
+      <button class="pm-modal-submit" id="modal-submit" type="submit" hidden>儲存</button>
+    </div>
     <div id="modal-body"></div>
   </div>
 </div>
@@ -126,11 +133,11 @@
 <!-- 提示訊息 -->
 <div class="pm-toasts" id="toasts" role="status" aria-live="polite"></div>
 
-<script src="js/config.js?v=20261015i"></script>
-<script src="js/places/poi-logic.js?v=20261015i"></script>
-<script src="js/places/demo-data.js?v=20261015i"></script>
-<script src="js/places/store.js?v=20261015i"></script>
-<script src="js/places/select.js?v=20261015i"></script>
-<script src="js/places/app.js?v=20261015i"></script>
+<script src="js/config.js?v=20261018c"></script>
+<script src="js/places/poi-logic.js?v=20261018c"></script>
+<script src="js/places/demo-data.js?v=20261018c"></script>
+<script src="js/places/store.js?v=20261018c"></script>
+<script src="js/places/select.js?v=20261018c"></script>
+<script src="js/places/app.js?v=20261018c"></script>
 </body>
 </html>

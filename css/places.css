@@ -1009,3 +1009,103 @@ button.pm-slot-thumb:focus-visible { outline: var(--focus-ring); outline-offset:
 @media (max-width: 640px) and (prefers-reduced-motion: reduce) {
   .pm-day-chevron { transition: none; }
 }
+
+/* --------------------------------------------------------------------------
+   對話框標題列：桌機只有標題；手機版「編輯」「手動新增」是全螢幕對話框（參考 Material UI Full-screen dialog）
+   -------------------------------------------------------------------------- */
+.pm-modal-x, .pm-modal-submit { display: none; }
+.pm-modal-bar h2 { margin: 0 0 var(--space-3); font-size: var(--fs-title); }
+
+@media (max-width: 640px) {
+  .pm-modal.is-full { padding: 0; place-items: stretch; background: var(--panel); }
+  .pm-modal.is-full .pm-modal-box {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100dvh;
+    max-height: none;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    animation: pm-sheet-up .22s ease-out;
+  }
+  .pm-modal.is-full .pm-modal-bar {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 56px;
+    padding: 0 8px 0 4px;
+    background: var(--appbar-bg, var(--route));
+    color: var(--appbar-ink, #fff);
+    box-shadow: 0 2px 4px -1px rgb(0 0 0 / .2), 0 4px 5px 0 rgb(0 0 0 / .14);
+  }
+  .pm-modal.is-full .pm-modal-bar h2 {
+    flex: 1 1 auto;
+    min-width: 0;
+    margin: 0 0 0 4px;
+    overflow: hidden;
+    color: inherit;
+    font-size: 18px;
+    font-weight: 500;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .pm-modal.is-full .pm-modal-x {
+    flex: none;
+    display: inline-grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+  }
+  .pm-modal.is-full .pm-modal-x svg { width: 22px; height: 22px; }
+  .pm-modal.is-full .pm-modal-submit:not([hidden]) {
+    flex: none;
+    display: inline-block;
+    padding: 8px 12px;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    cursor: pointer;
+  }
+  .pm-modal.is-full .pm-modal-x:hover,
+  .pm-modal.is-full .pm-modal-submit:hover { background: rgb(255 255 255 / .12); }
+  .pm-modal.is-full .pm-modal-x:focus-visible,
+  .pm-modal.is-full .pm-modal-submit:focus-visible { outline: 2px solid currentColor; outline-offset: -3px; }
+  .pm-modal.is-full #modal-body {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 16px 16px calc(24px + env(safe-area-inset-bottom, 0px));
+    -webkit-overflow-scrolling: touch;
+  }
+  .pm-modal.is-full .pm-modal-actions { display: none; }   /* 送出改在標題列右側，關閉用左上 ✕ */
+  .pm-modal.is-full .pm-form-row { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 640px) and (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .pm-modal.is-full .pm-modal-bar { --appbar-bg: #22292c; --appbar-ink: var(--ink); }
+}
+@media (max-width: 640px) {
+  :root[data-theme="dark"] .pm-modal.is-full .pm-modal-bar { --appbar-bg: #22292c; --appbar-ink: var(--ink); }
+}
+@keyframes pm-sheet-up { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .pm-modal.is-full .pm-modal-box { animation: none; }
+}
+@media (max-width: 640px) {
+  /* 對話框按鈕平均分配寬度 */
+  .pm-modal-actions { flex-wrap: nowrap; }
+  .pm-modal-actions .btn { flex: 1 1 0; min-width: 0; }
+}

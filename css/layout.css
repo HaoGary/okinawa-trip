@@ -668,6 +668,34 @@ a.places-link {
 }
 
 /* --------------------------------------------------------------------------
+   資訊卡（桌機、平板）：左欄 當天摘要；右欄 全島活動範圍＝[小地圖 | 說明]
+   活動範圍不再重複起訖標題，小地圖縮小，卡片高度跟左欄一致
+   -------------------------------------------------------------------------- */
+@media (min-width: 641px) {
+  .info {
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: var(--space-6);
+    align-items: stretch;
+  }
+  .info .ov {
+    grid-row: 1 / span 3;                          /* 左欄只有 標題、統計、按鈕 三列，避免多出空白列 */
+    align-self: center;
+    grid-template-columns: 148px minmax(132px, 180px);
+    align-items: start;
+    gap: var(--space-4);
+    padding-left: var(--space-6);
+  }
+  .info .ovmap { width: 148px; max-width: 148px; border-radius: var(--radius-md); }
+  .info .ov-t {
+    order: 0;
+    gap: 6px;
+    padding-top: 2px;
+  }
+  .info .ov-t small { line-height: 1.6; }
+  .info .ov-t .key { margin-top: 2px; }
+}
+
+/* --------------------------------------------------------------------------
    ≤640px：我的行程每天的內容重新排版
    1. 當天摘要卡（DAY N、起訖、公里／地點數、導航按鈕、全島活動範圍小圖）放最上面
    2. 地圖與行程清單接成一張卡片（地圖在上、清單在下）
@@ -695,7 +723,6 @@ a.places-link {
     padding-top: var(--space-3);
   }
   .info .ov-t { grid-column: 1; grid-row: 1; order: 0; }
-  .info .ov-t b { display: none; }                 /* 與上方標題相同，手機版不重複 */
   .info .ovmap { grid-column: 2; grid-row: 1; width: 96px; max-width: 96px; border-radius: var(--radius-sm); }
 
   /* 地圖＋行程清單接成一張卡片 */

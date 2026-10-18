@@ -66,7 +66,6 @@
           <svg class="ovmap" viewBox="0 0 320 400" role="img" aria-label="沖繩本島全圖，框出第 ${day.id} 天活動範圍"></svg>
           <div class="ov-t">
             <span class="eyebrow">${esc(T.areaEyebrow)}</span>
-            <b>${esc(day.area.title)}</b>
             <small>${esc(day.area.note)}</small>
             <span class="key"><i></i>${esc(T.areaKey)}</span>
           </div>

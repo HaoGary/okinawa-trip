@@ -219,13 +219,13 @@ okinawa-trip/
 - 加入地點時，自己的照片（雲端硬碟，例如原行程地點的照片）會一起帶進地點清單；Google 搜尋結果的照片依 Google 規範不保存。
 - 名稱相同時，目前景點以地點清單（poi）為準顯示。
 
-## 景點搜尋與地點清單同步（20261015i）
+## 景點搜尋與地點清單同步（20261018c）
 
 - 「景點搜尋」不再區分「原行程景點」與「示範資料」，也不再有模擬景點：預設列出全部景點（原行程地點＋地點清單），依搜尋條件篩選。
 - 移除「全選」、勾選框與「加入地點」。Google Maps 搜尋結果用「選擇天數＋加入」排進行程時，會自動加入地點清單。
 - 「地點清單」顯示同一批景點：原行程地點（試算表 place）也列在這裡，可「編輯」、可「刪除」。
 - 刪除原行程地點：這個行程中用到它的 day_stop 標為 `removed = TRUE`、`hidden = TRUE`（day_stop 頁籤會自動補上 removed 欄），poi_schedule 中對應的排序資料移除；place 頁籤的資料保留。「我的行程」也會同步拿掉。
-- 需要更新的 Apps Script：PoiStore.gs（deletePlace_）、Itinerary.gs、Api.gs、Config.gs（CODE_BUILD 20261015i）。
+- 需要更新的 Apps Script：PoiStore.gs（deletePlace_）、Itinerary.gs、Api.gs、Config.gs（CODE_BUILD 20261018c）。
 
 ## 同一個景點可以安排在不同天
 
@@ -233,11 +233,11 @@ okinawa-trip/
 - 同一天不能重複安排同一個景點。
 - 卡片上的「已安排：第 N 天」會列出所有天數（原行程地點與同名的地點清單景點一起計算）。
 
-## 「已移出地點」在「確認」時清除歷史資料（20261015i）
+## 「已移出地點」在「確認」時清除歷史資料（20261018c）
 
 - 行程安排中「移出行程」的原行程地點，會先放在當天的「已移出地點」，按「確認」前都可以「加回」。
 - 按「確認」後，「已移出地點」清單會清空，但資料不會刪除：poi_schedule 的這些資料列標為 `archived = TRUE`，並記下 `archived_at`（清除時間）。網頁與我的行程都不再讀取 archived 的資料列。
 - day_stop 保留 `hidden = TRUE`，之後不會自動排回行程；地點本身仍在「地點清單」，可從「景點搜尋」再加入。
 - 在地點清單刪除原行程地點時，它的排序資料一樣只標 archived，不刪除。
 - 要復原：在試算表把該列的 `archived` 清空（或改 FALSE）、`hidden` 改 FALSE，並把 day_stop 對應列的 `hidden` 改 FALSE。
-- 需要更新的 Apps Script：PoiStore.gs、PoiLogic.gs、Itinerary.gs、Config.gs（CODE_BUILD 20261015i）。
+- 需要更新的 Apps Script：PoiStore.gs、PoiLogic.gs、Itinerary.gs、Config.gs（CODE_BUILD 20261018c）。

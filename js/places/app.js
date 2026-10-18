@@ -459,7 +459,7 @@
         photoField('m-photo', null) +
         '<p class="pm-form-err" id="m-err" role="alert" hidden></p>' +
         '<div class="pm-modal-actions"><button class="btn" type="button" data-close>取消</button><button class="btn primary" type="submit">加入地點</button></div>' +
-      '</form>');
+      '</form>', { full: true, submit: { form: 'manual-form', label: '加入' } });
     $('m-name').focus();
     const manualPhoto = bindPhotoField('m-photo');
     $('manual-form').addEventListener('submit', (e) => {
@@ -589,13 +589,12 @@
     if (S.mode !== 'remote') { toast('離線示範不能刪除原行程地點', 'warn'); return; }
     const ids = [...new Set(S.stops.filter((t) => normName(t.name) === normName(r.name) && t.place_id != null).map((t) => Number(t.place_id)))];
     const days = [...new Set(S.stops.filter((t) => ids.indexOf(Number(t.place_id)) >= 0).map((t) => Number(t.day_no)))].sort((a, b) => a - b);
-    openModal('刪除景點？',
-      '<p>確定刪除「<b>' + esc(r.name) + '</b>」？</p>' +
-      (days.length ? '<p>它在第 ' + esc(days.join('、')) + ' 天的行程也會一併移除。</p>' : '') +
-      '<p class="pm-hint">這是原行程的地點：會從地點清單與行程移除（試算表 day_stop 標為 removed），place 頁籤的資料保留。</p>' +
+    const planned = namedDays(r.name);
+    openModal('刪除確認',
+      '<p>確定刪除「<b>' + esc(r.name) + '</b>」？' + (planned.length ? '第 ' + esc(planned.join('、')) + ' 天的行程也會一併移除。' : '') + '</p>' +
       '<div class="pm-modal-actions">' +
         '<button class="btn" type="button" data-close>取消</button>' +
-        '<button class="btn pm-danger is-solid" type="button" id="delete-confirm">確定刪除</button>' +
+        '<button class="btn pm-danger is-solid" type="button" id="delete-confirm">刪除</button>' +
       '</div>');
     $('delete-confirm').focus();
     $('delete-confirm').addEventListener('click', () => {
@@ -806,7 +805,7 @@
         photoField('e-photo', current) +
         '<p class="pm-form-err" id="e-err" role="alert" hidden></p>' +
         '<div class="pm-modal-actions"><button class="btn" type="button" data-close>取消</button><button class="btn primary" type="submit">儲存</button></div>' +
-      '</form>');
+      '</form>', { full: true, submit: { form: 'edit-form', label: '儲存' } });
     $('e-name').focus();
     const pick = bindPhotoField('e-photo');
     $('edit-form').addEventListener('submit', (e) => {
@@ -947,14 +946,11 @@
     const p = poiById(id);
     if (!p) return;
     const days = daysOf(id);
-    openModal('刪除景點？',
-      '<p>確定刪除「<b>' + esc(p.name) + '</b>」？</p>' +
-      (days.length ? '<p>它在第 ' + esc(days.join('、')) + ' 天的安排也會一併移除。</p>' : '') +
-      (isNew(id) ? '<p class="pm-hint">這個地點還沒寫入試算表，刪除後只會從頁面上移除。</p>'
-        : '<p class="pm-hint">刪除後會從' + (S.mode === 'remote' ? '試算表的' : '') + '地點清單移除，無法復原。</p>') +
+    openModal('刪除確認',
+      '<p>確定刪除「<b>' + esc(p.name) + '</b>」？' + (days.length ? '第 ' + esc(days.join('、')) + ' 天的行程也會一併移除。' : '') + '</p>' +
       '<div class="pm-modal-actions">' +
         '<button class="btn" type="button" data-close>取消</button>' +
-        '<button class="btn pm-danger is-solid" type="button" id="delete-confirm">確定刪除</button>' +
+        '<button class="btn pm-danger is-solid" type="button" id="delete-confirm">刪除</button>' +
       '</div>');
     $('delete-confirm').focus();
     $('delete-confirm').addEventListener('click', () => {
@@ -1267,10 +1263,17 @@
 
   /* ---------------- 對話框 ---------------- */
   let lastFocus = null;
-  function openModal(title, html) {
+  // opts.full：手機版改成全螢幕對話框；opts.submit：{ form, label } 標題列右側的送出按鈕（只在手機版顯示）
+  function openModal(title, html, opts) {
+    opts = opts || {};
     lastFocus = document.activeElement;
     $('modal-title').textContent = title;
     $('modal-body').innerHTML = html;
+    $('modal').classList.toggle('is-full', !!opts.full);
+    const sub = $('modal-submit');
+    sub.hidden = !opts.submit;
+    if (opts.submit) { sub.setAttribute('form', opts.submit.form); sub.textContent = opts.submit.label; }
+    else sub.removeAttribute('form');
     $('modal').hidden = false;
     document.body.classList.add('pm-modal-open');
   }
@@ -1343,7 +1346,7 @@
     });
   }
 
-  console.info('[地點管理] 程式版本 20261015i');
+  console.info('[地點管理] 程式版本 20261018c');
   showTab((location.hash || '').slice(1));
   load();
 })(window.Trip);

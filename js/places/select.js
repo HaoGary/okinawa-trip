@@ -38,7 +38,15 @@
     control.tabIndex = sel.disabled ? -1 : 0;
   }
 
+  // iOS（iPhone、iPad）改用原生下拉選單：點下去由系統從底部跳出滾輪（或 iPad 的選單），不套用自訂外觀
+  // 測試用：網址加 ?nativeSelect=1 也會改用原生選單
+  const NATIVE = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) ||
+    /[?&]nativeSelect=1/.test(location.search);
+  if (NATIVE) document.documentElement.classList.add('native-select');
+
   function enhance(sel) {
+    if (NATIVE) return;
     if (sel._rs || sel.multiple || sel.closest('.rs')) return;
     const wrap = document.createElement('div');
     wrap.className = 'rs';
@@ -240,5 +248,5 @@
 
   document.addEventListener('DOMContentLoaded', () => enhanceAll());
   if (document.readyState !== 'loading') enhanceAll();
-  window.ReactSelectLike = { enhance, enhanceAll, close };
+  window.ReactSelectLike = { enhance, enhanceAll, close, native: NATIVE };
 })();

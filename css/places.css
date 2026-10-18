@@ -1109,3 +1109,11 @@ button.pm-slot-thumb:focus-visible { outline: var(--focus-ring); outline-offset:
   .pm-modal-actions { flex-wrap: nowrap; }
   .pm-modal-actions .btn { flex: 1 1 0; min-width: 0; }
 }
+
+/* iOS Safari：輸入框字體小於 16px 時，點一下會自動放大畫面。
+   手機與觸控裝置的輸入框一律用 16px（不鎖定縮放，使用者仍可雙指放大） */
+@media (max-width: 640px), (hover: none) and (pointer: coarse) {
+  :root input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+  :root textarea,
+  :root select { font-size: 16px; }
+}

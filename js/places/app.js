@@ -1346,7 +1346,7 @@
     });
   }
 
-  console.info('[地點管理] 程式版本 20261018c');
+  console.info('[地點管理] 程式版本 20261018d');
   showTab((location.hash || '').slice(1));
   load();
 })(window.Trip);
